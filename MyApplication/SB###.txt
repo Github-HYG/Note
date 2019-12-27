@@ -1,0 +1,3 @@
+EditActivity.java 
+bug1：AutoSetNode()  新建笔记，什么都没写，照样保存一个笔记；
+bug2：编辑笔记以后变成了新的笔记：跟openMode有关，自己调；
