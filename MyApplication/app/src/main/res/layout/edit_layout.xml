@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="4dp"
-        android:background="#07B7CF"
+        android:background="#F5C537"
         android:theme="?attr/toolbarTheme"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="?attr/titleColor">
@@ -59,7 +59,7 @@
         android:layout_marginBottom="20dp"
         android:clickable="true"
         android:tint="#008F2E2E"
-        app:backgroundTint="#2196F3"
+        app:backgroundTint="#FFC107"
         app:srcCompat="@drawable/ic_photo_library_black_24dp"
         tools:ignore="VectorDrawableCompat" />
 

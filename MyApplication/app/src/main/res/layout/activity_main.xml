@@ -31,7 +31,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="0dp"
             android:layout_marginTop="0dp"
-            android:background="#E1E2E2"
+            android:background="#FFC107"
             android:elevation="4dp"
             android:theme="?attr/toolbarTheme"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -69,8 +69,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="10dp"
                 android:divider="?attr/lvBackground"
+                android:layoutAnimation="@anim/anim_listview_item"
                 android:dividerHeight="6dp">
-
             </ListView>
 
         </LinearLayout>
@@ -114,7 +114,7 @@
         android:layout_marginBottom="10dp"
         android:clickable="true"
         android:stateListAnimator="@null"
-        app:backgroundTint="#00BCD4"
+        app:backgroundTint="#D48600"
         app:srcCompat="@drawable/ic_add_black_24dp"
         tools:ignore="VectorDrawableCompat" />
 
@@ -133,7 +133,7 @@
         android:layout_marginBottom="10dp"
         android:clickable="true"
         android:stateListAnimator="@null"
-        app:backgroundTint="#7A8DF7"
+        app:backgroundTint="#D48600"
         app:srcCompat="@drawable/ic_add_black_24dp"
         tools:ignore="VectorDrawableCompat" />
 

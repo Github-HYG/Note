@@ -453,7 +453,7 @@ import static android.content.ContentValues.TAG;
              case R.id.menu_clear:
                  if(!content_switch.isChecked()) {
                      new AlertDialog.Builder(MainActivity.this)//
-                             .setMessage("确认删除所有笔记")//确认框
+                             .setMessage("是否删除所有笔记")//确认框
 
                              //设置按钮为YES反应
                              .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -479,7 +479,7 @@ import static android.content.ContentValues.TAG;
                  }
                  else{
                          new AlertDialog.Builder(MainActivity.this)
-                                 .setMessage("Delete All Plans ?")
+                                 .setMessage("是否删除所有提醒")
                                  .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                      @Override
                                      public void onClick(DialogInterface dialog, int which) {
@@ -498,7 +498,7 @@ import static android.content.ContentValues.TAG;
                      }
                      break;
              case R.id.refresh:
-                 my_toolbar.setTitle("All Notes");
+                 my_toolbar.setTitle("小黄笔记");
                  lv.setAdapter(adapter);
                  break;
 
@@ -513,7 +513,7 @@ import static android.content.ContentValues.TAG;
 
          //tag  分类
          if (!sharedPreferences.contains("tagListString")) {
-             String s = "no tag_life_study_work_play";
+             String s = "无标签_生活_学习_工作_娱乐";
              editor.putString("tagListString", s);
              editor.commit();
          }
@@ -551,7 +551,7 @@ import static android.content.ContentValues.TAG;
                  intent.putExtra("content", curNote.getContent());
                  intent.putExtra("time", curNote.getTime());
                  intent.putExtra("id", curNote.getId());
-                 intent.putExtra("mode", 3);                //修改的mode为3，openMode用
+                 intent.putExtra("mode", 3);                //已存在mode为3，openMode用
                  intent.putExtra("tag", curNote.getTag());
                  startActivityForResult(intent, 1);
                  overridePendingTransition(R.anim.in_righttoleft, R.anim.out_righttoleft);
@@ -562,7 +562,7 @@ import static android.content.ContentValues.TAG;
                  intent1.putExtra("title", curPlan.getTitle());
                  intent1.putExtra("content", curPlan.getContent());
                  intent1.putExtra("time", curPlan.getTime());
-                 intent1.putExtra("mode", 1);
+                 intent1.putExtra("mode", 1);               //已存在mode为1，openMode用
                  intent1.putExtra("id", curPlan.getId());
                  startActivityForResult(intent1, 1);
                  break;
@@ -576,7 +576,7 @@ import static android.content.ContentValues.TAG;
              case R.id.lv:
                  final Note note = noteList.get(position);
                  new AlertDialog.Builder(MainActivity.this)
-                         .setMessage("Do you want to delete this note ?")
+                         .setMessage("是否删除这个笔记吗")
                          .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                              @Override
                              public void onClick(DialogInterface dialog, int which) {
@@ -596,7 +596,7 @@ import static android.content.ContentValues.TAG;
              case R.id.lv_plan:
                  final Plan plan = planList.get(position);
                  new AlertDialog.Builder(MainActivity.this)
-                         .setMessage("Do you want to delete this plan ?")
+                         .setMessage("是否删除这个提醒 ?")
                          .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                              @Override
                              public void onClick(DialogInterface dialog, int which) {
@@ -672,8 +672,8 @@ import static android.content.ContentValues.TAG;
 
 
          }
-         if(temp) my_toolbar.setTitle("Plan");
-         else my_toolbar.setTitle("Note");
+         if(temp) my_toolbar.setTitle("提醒");
+         else my_toolbar.setTitle("笔记");
      }
 
      //统计不同标签的笔记数

@@ -46,9 +46,8 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
      * BUG：按下返回键 android 会强制返回，（即使日期错误），那么RESULT_OK 就不能解决
      *
      * 理想情况：按下返回键提示非法格式，然后再按一次提示“再按一次退出”
-     *
-     *      $$$$$$ 或者最好是 ： 选择日期的控件按下确认时提示<非法>然后强制重新选择日期
-     *             但是这个时候按下返回键怎么办......
+
+       解决了
      *
      */
 
@@ -58,6 +57,8 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
     private EditText et;      //内容
     private Button set_date;
     private Button set_time;
+
+    private  TimePicker tp;
 
     private TextView date;
     private TextView time;
@@ -79,8 +80,10 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.edit_alarm_layout);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
+        myToolbar.setNavigationIcon(R.drawable.ic_save_black_24dp);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 //--------------例行代码------------------------------------
 
 
@@ -116,52 +119,67 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
 
-                //无效日期
-                if(!canBeSet()) {
-                    Toast.makeText(EditAlarmActivity.this, "不能选过去的日期哦~", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent();
+                if(openMode == 2){
+                    //新笔记
+                    if(et.getText().toString().length() + et_title.getText().toString().length() == 0 && openMode == 2){
+                        //新笔记 ，但是没有编辑
+                        Intent intent1 = new Intent();
+                        intent1.putExtra("mode", -1);//nothing new happens.
+                        setResult(RESULT_OK, intent1);
+                        finish();//返回
+                        overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
+                    }else {
+                        //新笔记编辑了
+                        if(!canBeSet()) {
+                            Toast.makeText(EditAlarmActivity.this, "不能选过去的日期哦~", Toast.LENGTH_SHORT).show();
 
-                //什么也没写，也没动
-                else if(et.getText().toString().length() + et_title.getText().toString().length() == 0 && openMode == 2){
+                        }
+                        else if (et_title.getText().toString().length() == 0) {
+                            Toast.makeText(EditAlarmActivity.this, "标题忘记写啦~", Toast.LENGTH_SHORT).show();
 
-                    Intent intent1 = new Intent();
-                    intent1.putExtra("mode", -1);//nothing new happens.
-                    setResult(RESULT_OK, intent1);
-                    finish();//返回
-                    overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
-                }
-
-                //没有标题
-                else if (et_title.getText().toString().length() == 0) {
-                    Toast.makeText(EditAlarmActivity.this, "标题忘记写啦~", Toast.LENGTH_SHORT).show();
-                }
-
-                //NORMAL
-                else {
-                    isTimeChange();
-                    Intent intent = new Intent();
-                    if (openMode == 2) {
-                        intent.putExtra("mode", 10); // new one plan;
-                        intent.putExtra("title", et_title.getText().toString());
-                        intent.putExtra("content", et.getText().toString());
-                        intent.putExtra("time", date.getText().toString() + " " + time.getText().toString());
-                        Log.d(TAG, "asd");
-                    } else {
-                        if (et.getText().toString().equals(old_content) && et_title.getText().toString().equals(old_title) && !timeChange) {
-                            intent.putExtra("mode", -1); // edit nothing
                         }
                         else {
-                            intent.putExtra("mode", 11); //edit the content
+                            intent.putExtra("mode", 10); // new one plan;
+                            intent.putExtra("title", et_title.getText().toString());
+                            intent.putExtra("content", et.getText().toString());
+                            intent.putExtra("time", date.getText().toString() + " " + time.getText().toString());
+                            Log.d(TAG, date.getText().toString() + time.getText().toString());
+                            setResult(RESULT_OK, intent);
+                            finish();
+                            overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
+                        }
+                    }
+                }else{
+                    //旧笔记
+                    if (et.getText().toString().equals(old_content) && et_title.getText().toString().equals(old_title) && !timeChange) {
+                        intent.putExtra("mode", -1); // 旧提醒 打开后没有编辑
+                        setResult(RESULT_OK, intent);
+                        finish();
+                        overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
+                    }
+                    else {
+                        //旧提醒 打开后编辑了
+                        if(!canBeSet()) {
+                            Toast.makeText(EditAlarmActivity.this, "不能选过去的日期哦~", Toast.LENGTH_SHORT).show();
+
+                        }
+                        else if (et_title.getText().toString().length() == 0) {
+                            Toast.makeText(EditAlarmActivity.this, "标题忘记写啦~", Toast.LENGTH_SHORT).show();
+
+                        }else {
+                            intent.putExtra("mode", 11);
                             intent.putExtra("title", et_title.getText().toString());
                             intent.putExtra("content", et.getText().toString());
                             intent.putExtra("time", date.getText().toString() + " " + time.getText().toString());
                             intent.putExtra("id", id);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                            overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
                         }
                     }
-                    setResult(RESULT_OK, intent);
-                    finish();//返回
-                    overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
                 }
+
             }
         });
 
@@ -172,43 +190,67 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
         if( keyCode== KeyEvent.KEYCODE_HOME){
             return true;
         } else if( keyCode== KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
-            if(!canBeSet()) {
-                Toast.makeText(EditAlarmActivity.this, "不能选过去的日期哦~", Toast.LENGTH_SHORT).show();
-            }else if(et.getText().toString().length() + et_title.getText().toString().length() == 0 && openMode == 2){
-                Intent intent1 = new Intent();
-                intent1.putExtra("mode", -1);//nothing new happens.
-                setResult(RESULT_OK, intent1);
-                finish();//返回
-                overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
-            }
-            else if (et_title.getText().toString().length() == 0) {
-                Toast.makeText(EditAlarmActivity.this, "标题忘记写啦~", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                isTimeChange();
-                Intent intent = new Intent();
-                if (openMode == 2) {
-                    intent.putExtra("mode", 10); // new one plan;
-                    intent.putExtra("title", et_title.getText().toString());
-                    intent.putExtra("content", et.getText().toString());
-                    intent.putExtra("time", date.getText().toString() + " " + time.getText().toString());
-                    Log.d(TAG, date.getText().toString() + time.getText().toString());
-                } else {
-                    if (et.getText().toString().equals(old_content) && et_title.getText().toString().equals(old_title) && !timeChange) {
-                        intent.putExtra("mode", -1); // edit nothing
+            Intent intent = new Intent();
+            if(openMode == 2){
+                //新笔记
+                if(et.getText().toString().length() + et_title.getText().toString().length() == 0 && openMode == 2){
+                    //新笔记 ，但是没有编辑
+                    Intent intent1 = new Intent();
+                    intent1.putExtra("mode", -1);//nothing new happens.
+                    setResult(RESULT_OK, intent1);
+                    finish();//返回
+                    overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
+                }else {
+                    //新笔记编辑了
+                    if(!canBeSet()) {
+                        Toast.makeText(EditAlarmActivity.this, "不能选过去的日期哦~", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    else if (et_title.getText().toString().length() == 0) {
+                        Toast.makeText(EditAlarmActivity.this, "标题忘记写啦~", Toast.LENGTH_SHORT).show();
+                        return true;
                     }
                     else {
-                        intent.putExtra("mode", 11); //edit the content
+                        intent.putExtra("mode", 10); // new one plan;
+                        intent.putExtra("title", et_title.getText().toString());
+                        intent.putExtra("content", et.getText().toString());
+                        intent.putExtra("time", date.getText().toString() + " " + time.getText().toString());
+                        Log.d(TAG, date.getText().toString() + time.getText().toString());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                        overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
+                    }
+                }
+            }else{
+                //旧笔记
+                if (et.getText().toString().equals(old_content) && et_title.getText().toString().equals(old_title) && !timeChange) {
+                    intent.putExtra("mode", -1); // 旧提醒 打开后没有编辑
+                    setResult(RESULT_OK, intent);
+                    finish();
+                    overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
+                }
+                else {
+                    //旧提醒 打开后编辑了
+                    if(!canBeSet()) {
+                        Toast.makeText(EditAlarmActivity.this, "不能选过去的日期哦~", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    else if (et_title.getText().toString().length() == 0) {
+                        Toast.makeText(EditAlarmActivity.this, "标题忘记写啦~", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }else {
+                        intent.putExtra("mode", 11);
                         intent.putExtra("title", et_title.getText().toString());
                         intent.putExtra("content", et.getText().toString());
                         intent.putExtra("time", date.getText().toString() + " " + time.getText().toString());
                         intent.putExtra("id", id);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                        overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
                     }
                 }
-                setResult(RESULT_OK, intent);
-                finish();
-                overridePendingTransition(R.anim.in_lefttoright, R.anim.out_lefttoright);
             }
+
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -230,7 +272,7 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
         switch (item.getItemId()){
             case R.id.delete:
                 new AlertDialog.Builder(EditAlarmActivity.this)
-                        .setMessage("Delete this plan ?")
+                        .setMessage("确认删除提醒")
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -295,7 +337,6 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
                 setDateTV(year, month+1, dayOfMonth);
             }
         };
-
         timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -342,6 +383,7 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
                         dateArray[0], dateArray[1] - 1, dateArray[2]); //????????
                 Log.d(TAG, "why??"+dateArray[1]);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis()-1000);
                 dialog.show();
                 break;
             case R.id.set_time://choose hour and minute
@@ -364,11 +406,11 @@ public class EditAlarmActivity extends BaseActivity implements View.OnClickListe
     private boolean canBeSet(){
         Calendar calendar = Calendar.getInstance();
         calendar.set(dateArray[0], dateArray[1] - 1, dateArray[2], timeArray[0], timeArray[1]);
+
         Calendar cur = Calendar.getInstance();
-        Log.d(TAG, "canBeSet: " + cur.getTime().toString() + calendar.getTime().toString());
+        Log.d(TAG, "canBeSet: 当前 " + cur.getTime().toString() + "   @@@@@@@@@@@  计划 "+ calendar.getTime().toString());
         if(cur.before(calendar)) return true;
         else {
-            Toast.makeText(this, "Invalid Time", Toast.LENGTH_SHORT).show();
             return false;
         }
     }

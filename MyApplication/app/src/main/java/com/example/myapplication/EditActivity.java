@@ -97,7 +97,7 @@ public class EditActivity extends AppCompatActivity {
         initView();
 
         //----------------------Setting TagList-----------------------
-        my_toolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_left_black_24dp);    //设置返回键样式
+        my_toolbar.setNavigationIcon(R.drawable.ic_save_black_24dp);    //设置返回键样式
         my_toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,7 +126,6 @@ public class EditActivity extends AppCompatActivity {
 
     public void initView() {
         fab_image = findViewById(R.id.fab_image);
-
         fab_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,7 +246,7 @@ public class EditActivity extends AppCompatActivity {
         else if(openMode == 3){
             if (et.getText().toString().equals(old_content) && !tagChange){ //判断是否有修改
                 intent.putExtra("mode", -1); // edit nothing
-                Log.d("tag", "edited the content！and TAG is: "+ tag);
+                Log.d("tag", "NO edited ！and TAG is: "+ tag);
             }
             else {
                 intent.putExtra("mode", 1); //edited the content

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Note</string>
+    <string name="app_name">小黄笔记</string>
     <string name="pref_night_summary">Turn on / off night mode</string>
     <string name="pref_reversesort_summary">Reverse the time order of current items</string>
     <string name="pref_reversesort">Reverse Time Order</string>
